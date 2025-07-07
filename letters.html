@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Наши сообщения | Дмитрий & Эльмира</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6b81;
+            --secondary-color: #ff8e9e;
+            --dark-color: #333;
+            --light-color: #f8f9fa;
+            --text-color: #444;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --overlay: rgba(0, 0, 0, 0.5);
+            --telegram-blue: #0088cc;
+            --telegram-light: #ebf5f9;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: #fef6f7;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Music Toggle */
+        .music-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        #musicBtn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        #musicBtn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        /* Floating Navigation */
+        .floating-nav {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            background: white;
+            border-radius: 30px;
+            padding: 15px 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        .floating-nav ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .floating-nav a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            color: var(--dark-color);
+            text-decoration: none;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-nav a:hover, .floating-nav a.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .floating-nav a::after {
+            content: attr(title);
+            position: absolute;
+            right: 70px;
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        
+        .floating-nav a:hover::after {
+            opacity: 1;
+        }
+        
+        /* Header */
+        .page-header {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            background: linear-gradient(rgba(255, 107, 129, 0.8), rgba(255, 107, 129, 0.8)), 
+                        url('images/messages-bg.jpg') center/cover;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .page-header .container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .page-header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Messages Section */
+        .messages-section {
+            padding: 40px 0;
+        }
+        
+        .messages-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            border: 1px solid #eee;
+        }
+        
+        .message {
+            display: flex;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+        
+        .message-content {
+            flex: 1;
+        }
+        
+        .message-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .message-sender {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .message-time {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        .message-text {
+            background: var(--telegram-light);
+            padding: 12px 15px;
+            border-radius: 0 15px 15px 15px;
+            position: relative;
+            max-width: 80%;
+        }
+        
+        .message-text:after {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 0;
+            height: 0;
+            border: 8px solid transparent;
+            border-right-color: var(--telegram-light);
+            border-left: 0;
+            margin-top: 0;
+        }
+        
+        .voice-message {
+            display: flex;
+            align-items: center;
+            background: var(--telegram-light);
+            padding: 10px 15px;
+            border-radius: 0 15px 15px 15px;
+            cursor: pointer;
+            position: relative;
+            max-width: 250px;
+        }
+        
+        .voice-message:after {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 0;
+            width: 0;
+            height: 0;
+            border: 8px solid transparent;
+            border-right-color: var(--telegram-light);
+            border-left: 0;
+            margin-top: 0;
+        }
+        
+        .voice-play-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--telegram-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        
+        .voice-duration {
+            font-size: 0.9rem;
+            color: var(--telegram-blue);
+            margin-right: 10px;
+        }
+        
+        .voice-wave {
+            flex: 1;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20" preserveAspectRatio="none"><path fill="%230088cc" d="M0,10 L5,10 L5,5 L10,5 L10,15 L15,15 L15,0 L20,0 L20,20 L25,20 L25,10 L30,10 L30,5 L35,5 L35,15 L40,15 L40,0 L45,0 L45,20 L50,20 L50,10 L55,10 L55,5 L60,5 L60,15 L65,15 L65,0 L70,0 L70,20 L75,20 L75,10 L80,10 L80,5 L85,5 L85,15 L90,15 L90,0 L95,0 L95,20 L100,20 L100,10" /></svg>') repeat-x;
+            background-size: 100% 100%;
+        }
+        
+        .my-message {
+            flex-direction: row-reverse;
+        }
+        
+        .my-message .message-content {
+            align-items: flex-end;
+        }
+        
+        .my-message .message-text {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 15px 0 15px 15px;
+            margin-left: auto;
+        }
+        
+        .my-message .message-text:after {
+            left: auto;
+            right: -8px;
+            border-right-color: transparent;
+            border-left-color: var(--primary-color);
+        }
+        
+        .my-message .voice-message {
+            margin-left: auto;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 15px 0 15px 15px;
+        }
+        
+        .my-message .voice-message:after {
+            left: auto;
+            right: -8px;
+            border-right-color: transparent;
+            border-left-color: var(--primary-color);
+        }
+        
+        .my-message .voice-play-btn {
+            background: white;
+            color: var(--primary-color);
+        }
+        
+        .my-message .voice-duration {
+            color: white;
+        }
+        
+        .my-message .voice-wave {
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20" preserveAspectRatio="none"><path fill="white" d="M0,10 L5,10 L5,5 L10,5 L10,15 L15,15 L15,0 L20,0 L20,20 L25,20 L25,10 L30,10 L30,5 L35,5 L35,15 L40,15 L40,0 L45,0 L45,20 L50,20 L50,10 L55,10 L55,5 L60,5 L60,15 L65,15 L65,0 L70,0 L70,20 L75,20 L75,10 L80,10 L80,5 L85,5 L85,15 L90,15 L90,0 L95,0 L95,20 L100,20 L100,10" /></svg>') repeat-x;
+        }
+        
+        .date-divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .date-divider:before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #eee;
+            z-index: -1;
+        }
+        
+        .date-divider span {
+            background: white;
+            padding: 0 15px;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+        
+        footer p {
+            margin-bottom: 10px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .floating-nav {
+                bottom: 20px;
+                top: auto;
+                right: 50%;
+                transform: translateX(50%);
+                flex-direction: row;
+                padding: 10px 15px;
+                border-radius: 30px;
+            }
+            
+            .floating-nav ul {
+                flex-direction: row;
+            }
+            
+            .floating-nav a {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .floating-nav a::after {
+                display: none;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .messages-container {
+                padding: 15px;
+            }
+            
+            .message-text, .voice-message {
+                max-width: 90%;
+            }
+            
+            .music-toggle {
+                bottom: 80px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Фоновый аудио плеер -->
+    <audio id="bgMusic" loop>
+        <source src="music/your-song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Кнопка включения музыки -->
+    <div class="music-toggle">
+        <button id="musicBtn"><i class="fas fa-music"></i> Включить музыку</button>
+    </div>
+
+    <!-- Навигация -->
+    <nav class="floating-nav">
+        <ul>
+            <li><a href="index.html" title="Начало"><i class="fas fa-home"></i></a></li>
+            <li><a href="timeline.html" title="Хронология"><i class="fas fa-history"></i></a></li>
+            <li><a href="map.html" title="Наши места"><i class="fas fa-map-marked-alt"></i></a></li>
+            <li><a href="gallery.html" title="Галерея"><i class="fas fa-images"></i></a></li>
+            <li><a href="messages.html" class="active" title="Сообщения"><i class="fas fa-comments"></i></a></li>
+            <li><a href="music.html" title="Наша музыка"><i class="fas fa-headphones"></i></a></li>
+        </ul>
+    </nav>
+
+    <!-- Заголовок страницы -->
+    <header class="page-header">
+        <div class="container">
+            <h1>Наши сообщения</h1>
+            <p>Диалоги и голосовые, которые согревают сердце</p>
+        </div>
+    </header>
+
+    <!-- Сообщения -->
+    <section class="messages-section">
+        <div class="container">
+            <div class="messages-container">
+                <!-- Дата -->
+                <div class="date-divider">
+                    <span>12 мая 2025</span>
+                </div>
+                
+                <!-- Сообщение от нее -->
+                <div class="message">
+                    <img src="images/her-avatar.jpg" alt="Аватар" class="message-avatar">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <div class="message-sender">Эльмира</div>
+                            <div class="message-time">10:23</div>
+                        </div>
+                        <div class="message-text">
+                            Мне одной страшно
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Сообщение от меня -->
+                <div class="message my-message">
+                    <img src="images/my-avatar.jpg" alt="Аватар" class="message-avatar">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <div class="message-sender">Я</div>
+                            <div class="message-time">10:25</div>
+                        </div>
+                        <div class="message-text">
+                           
+зай,
+свет
+бегом,
+я щас пойду сполоснусь
+и тоже ложиться буду
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Голосовое от нее -->
+                
+                <!-- Дата -->
+                <div class="date-divider">
+                    <span>14 февраля 2024</span>
+                </div>
+                
+                <!-- Сообщение от меня -->
+                <div class="message my-message">
+                    <img src="images/my-avatar.jpg" alt="Аватар" class="message-avatar">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <div class="message-sender">Я</div>
+                            <div class="message-time">08:00</div>
+                        </div>
+                        <div class="message-text">
+                            Но я всеее ещё чувствую твой запах
+                        </div>
+                    </div>
+                </div>
+
+                
+                <!-- Сообщение от нее -->
+                <div class="message">
+                    <img src="images/her-avatar.jpg" alt="Аватар" class="message-avatar">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <div class="message-sender">Эльмира</div>
+                            <div class="message-time">08:30</div>
+                        </div>
+                        <div class="message-text">
+Пошли
+Бусь
+Мой
+Родной человечек
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Создано с ❤ для самой прекрасной девушки на свете</p>
+            <p>© 2024 Дмитрий & Эльмира</p>
+        </div>
+    </footer>
+
+    <script>
+        // Музыка
+        document.addEventListener('DOMContentLoaded', function() {
+            const musicBtn = document.getElementById('musicBtn');
+            const bgMusic = document.getElementById('bgMusic');
+            let isPlaying = false;
+            
+            musicBtn.addEventListener('click', function() {
+                if (isPlaying) {
+                    bgMusic.pause();
+                    musicBtn.innerHTML = '<i class="fas fa-music"></i> Включить музыку';
+                } else {
+                    bgMusic.play();
+                    musicBtn.innerHTML = '<i class="fas fa-pause"></i> Выключить музыку';
+                }
+                isPlaying = !isPlaying;
+            });
+            
+            // Воспроизведение голосовых сообщений
+            const voiceMessages = document.querySelectorAll('.voice-message');
+            voiceMessages.forEach(msg => {
+                msg.addEventListener('click', function() {
+                    const playBtn = this.querySelector('.voice-play-btn i');
+                    if (playBtn.classList.contains('fa-play')) {
+                        playBtn.classList.remove('fa-play');
+                        playBtn.classList.add('fa-pause');
+                        // Здесь можно добавить реальное воспроизведение аудио
+                    } else {
+                        playBtn.classList.remove('fa-pause');
+                        playBtn.classList.add('fa-play');
+                        // Остановка воспроизведения
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

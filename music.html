@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Наша музыка | Дмитрий & Эльмира</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff6b81;
+            --secondary-color: #ff8e9e;
+            --dark-color: #333;
+            --light-color: #f8f9fa;
+            --text-color: #444;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: #fef6f7;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Music Toggle */
+        .music-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        #musicBtn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        #musicBtn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        /* Floating Navigation */
+        .floating-nav {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            background: white;
+            border-radius: 30px;
+            padding: 15px 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        .floating-nav ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .floating-nav a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            color: var(--dark-color);
+            text-decoration: none;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-nav a:hover, .floating-nav a.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .floating-nav a::after {
+            content: attr(title);
+            position: absolute;
+            right: 70px;
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        
+        .floating-nav a:hover::after {
+            opacity: 1;
+        }
+        
+        /* Header */
+        .page-header {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            background: linear-gradient(rgba(255, 107, 129, 0.8), rgba(255, 107, 129, 0.8)), 
+                        url('images/music-bg.jpg') center/cover;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .page-header .container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .page-header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Music Section */
+        .music-section {
+            padding: 40px 0;
+        }
+        
+        .music-player {
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .player-cover {
+            width: 250px;
+            height: 250px;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .player-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .player-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .player-controls button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .player-controls button:hover {
+            background: var(--secondary-color);
+            transform: scale(1.1);
+        }
+        
+        .player-info {
+            flex: 1;
+        }
+        
+        .player-info h2 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .player-info p {
+            color: #777;
+            margin-bottom: 20px;
+        }
+        
+        .progress-container {
+            margin: 25px 0;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            margin-bottom: 5px;
+            position: relative;
+        }
+        
+        .progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 30%;
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        .progress-container span {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .progress-container span:first-child {
+            float: left;
+        }
+        
+        .progress-container span:last-child {
+            float: right;
+        }
+        
+        .playlist {
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .playlist h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .playlist ul {
+            list-style: none;
+        }
+        
+        .playlist li {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .playlist li:last-child {
+            border-bottom: none;
+        }
+        
+        .playlist li:hover {
+            background: #fff5f6;
+        }
+        
+        .playlist li.active {
+            background: #ffebee;
+            color: var(--primary-color);
+        }
+        
+        .playlist li .song-number {
+            color: #999;
+            width: 20px;
+        }
+        
+        .playlist li .song-info {
+            flex: 1;
+        }
+        
+        .playlist li .song-title {
+            font-weight: 500;
+        }
+        
+        .playlist li .song-artist {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .playlist li .song-duration {
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        .music-memories {
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+        }
+        
+        .music-memories h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .memory {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .memory:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .memory-cover {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .memory-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .memory-text h4 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .memory-text p {
+            color: #555;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 60px;
+        }
+        
+        footer p {
+            margin-bottom: 10px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .floating-nav {
+                bottom: 20px;
+                top: auto;
+                right: 50%;
+                transform: translateX(50%);
+                flex-direction: row;
+                padding: 10px 15px;
+                border-radius: 30px;
+            }
+            
+            .floating-nav ul {
+                flex-direction: row;
+            }
+            
+            .floating-nav a {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .floating-nav a::after {
+                display: none;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .music-player {
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            .player-cover {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .player-info {
+                width: 100%;
+            }
+            
+            .playlist, .music-memories {
+                padding: 20px;
+            }
+            
+            .memory {
+                flex-direction: column;
+            }
+            
+            .memory-cover {
+                width: 100%;
+                height: 150px;
+            }
+            
+            .music-toggle {
+                bottom: 80px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Фоновый аудио плеер -->
+    <audio id="bgMusic" loop>
+        <source src="music/your-song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Кнопка включения музыки -->
+    <div class="music-toggle">
+        <button id="musicBtn"><i class="fas fa-music"></i> Включить музыку</button>
+    </div>
+
+    <!-- Навигация -->
+    <nav class="floating-nav">
+        <ul>
+            <li><a href="index.html" title="Начало"><i class="fas fa-home"></i></a></li>
+            <li><a href="timeline.html" title="Хронология"><i class="fas fa-history"></i></a></li>
+            <li><a href="map.html" title="Наши места"><i class="fas fa-map-marked-alt"></i></a></li>
+            <li><a href="gallery.html" title="Галерея"><i class="fas fa-images"></i></a></li>
+            <li><a href="letters.html" title="Письма"><i class="fas fa-envelope"></i></a></li>
+            <li><a href="music.html" class="active" title="Наша музыка"><i class="fas fa-headphones"></i></a></li>
+        </ul>
+    </nav>
+
+    <!-- Заголовок страницы -->
+    <header class="page-header">
+        <div class="container">
+            <h1>Наш саундтрек</h1>
+            <p>Музыка, которая звучала в важные моменты</p>
+        </div>
+    </header>
+
+    <!-- Основное содержимое -->
+    <section class="music-section">
+        <div class="container">
+            <!-- Музыкальный плеер -->
+            <div class="music-player">
+                <div class="player-cover">
+                    <img src="images/cover-1.jpg" alt="Обложка" id="coverImage">
+                    <div class="player-controls">
+                        <button id="prevBtn"><i class="fas fa-step-backward"></i></button>
+                        <button id="playBtn"><i class="fas fa-play"></i></button>
+                        <button id="nextBtn"><i class="fas fa-step-forward"></i></button>
+                    </div>
+                </div>
+                <div class="player-info">
+                    <h2 id="songTitle">Мой май</h2>
+                    <p id="songArtist">f0lk</p>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                        <span id="currentTime">0:00</span>
+                        <span id="duration">2:01</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Плейлист -->
+            <div class="playlist">
+                <h3>Наш плейлист</h3>
+                <ul id="playlist">
+                    <li class="active">
+                        <span class="song-number">1</span>
+                        <div class="song-info">
+                            <div class="song-title">Мой май</div>
+                            <div class="song-artist">f0lk</div>
+                        </div>
+                        <span class="song-duration">2:01</span>
+                    </li>
+                    <li>
+                        <span class="song-number">2</span>
+                        <div class="song-info">
+                            <div class="song-title">Фоткаю на глаза</div>
+                            <div class="song-artist">Мартин</div>
+                        </div>
+                        <span class="song-duration">2:40</span>
+                    </li>
+                    <li>
+                        <span class="song-number">3</span>
+                        <div class="song-info">
+                            <div class="song-title">Downtown Baby</div>
+                            <div class="song-artist">Bloo </div>
+                        </div>
+                        <span class="song-duration">3:17</span>
+                    </li>
+
+                </ul>
+            </div>
+            
+            <!-- Истории за песнями -->
+            <div class="music-memories">
+                <h3>Истории за песнями</h3>
+                <div class="memory">
+                    <div class="memory-cover">
+                        <img src="images/cover-1.jpg" alt="Мой май - f0lk">
+                    </div>
+                    <div class="memory-text">
+                        <h4>Мой май - f0lk</h4>
+                        <p>За все время, мы очень много слушали данного исполнителя, в хорошие и грустные моменты, и я рад что мы слушали его вдвоем</p>
+                    </div>
+                </div>
+                
+                <div class="memory">
+                    <div class="memory-cover">
+                        <img src="images/cover-2.jpg" alt="
+Downtown Baby - Bloo ">
+                    </div>
+                    <div class="memory-text">
+                        <h4>Downtown Baby - Bloo </h4>
+                        <p>А под эту песню, мы ехали и радовались что снова вместе! Помнишь как записывала кружочки?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Создано с ❤ для самой прекрасной девушки на свете</p>
+            <p>© 2024 Дмитрий & Эльмира</p>
+        </div>
+    </footer>
+
+    <script>
+    // Музыкальный плеер
+    document.addEventListener('DOMContentLoaded', function() {
+        // Фоновая музыка
+        const musicBtn = document.getElementById('musicBtn');
+        const bgMusic = document.getElementById('bgMusic');
+        let isPlaying = false;
+        
+        musicBtn.addEventListener('click', function() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicBtn.innerHTML = '<i class="fas fa-music"></i> Включить музыку';
+            } else {
+                bgMusic.play();
+                musicBtn.innerHTML = '<i class="fas fa-pause"></i> Выключить музыку';
+            }
+            isPlaying = !isPlaying;
+        });
+        
+        // Основной плеер
+        const audioPlayer = new Audio();
+        const playBtn = document.getElementById('playBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
+        const playlistItems = document.querySelectorAll('#playlist li');
+        const coverImage = document.getElementById('coverImage');
+        
+        // Плейлист с данными
+        const songs = [
+            {
+                title: "Мой май",
+                artist: "f0lk",
+                file: "music/moy-may.mp3",
+                cover: "images/cover-1.jpg",
+                duration: "2:01"
+            },
+            {
+                title: "Фоткаю на глаза",
+                artist: "Мартин",
+                file: "music/fotkayu-na-glaza.mp3",
+                cover: "images/cover-2.jpg",
+                duration: "2:40"
+            },
+            {
+                title: "Downtown Baby",
+                artist: "Bloo",
+                file: "music/downtown-baby.mp3",
+                cover: "images/cover-3.jpg",
+                duration: "3:17"
+            }
+        ];
+        
+        let currentSongIndex = 0;
+        let isPlayerPlaying = false;
+        
+        // Форматирование времени
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        // Обновление прогресса
+        function updateProgress() {
+            const { currentTime, duration } = audioPlayer;
+            const progressPercent = (currentTime / duration) * 100;
+            progressBar.style.width = `${progressPercent}%`;
+            currentTimeEl.textContent = formatTime(currentTime);
+        }
+        
+        // Установка прогресса
+        function setProgress(e) {
+            const width = this.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audioPlayer.duration;
+            audioPlayer.currentTime = (clickX / width) * duration;
+        }
+        
+        // Загрузка песни
+        function loadSong(songIndex) {
+            const song = songs[songIndex];
+            
+            // Обновляем интерфейс
+            document.getElementById('songTitle').textContent = song.title;
+            document.getElementById('songArtist').textContent = song.artist;
+            durationEl.textContent = song.duration;
+            coverImage.src = song.cover;
+            
+            // Загружаем аудио
+            audioPlayer.src = song.file;
+            audioPlayer.load();
+            
+            // Обновляем активный элемент плейлиста
+            playlistItems.forEach(item => item.classList.remove('active'));
+            playlistItems[songIndex].classList.add('active');
+            
+            // Сбрасываем прогресс
+            progressBar.style.width = '0%';
+            currentTimeEl.textContent = '0:00';
+        }
+        
+        // Воспроизведение песни
+        function playSong() {
+            audioPlayer.play()
+                .then(() => {
+                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    isPlayerPlaying = true;
+                })
+                .catch(error => {
+                    console.error("Ошибка воспроизведения:", error);
+                    alert("Не удалось воспроизвести песню. Проверьте консоль для подробностей.");
+                });
+        }
+        
+        // Пауза
+        function pauseSong() {
+            audioPlayer.pause();
+            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            isPlayerPlaying = false;
+        }
+        
+        // Предыдущая песня
+        function prevSong() {
+            currentSongIndex--;
+            if (currentSongIndex < 0) {
+                currentSongIndex = songs.length - 1;
+            }
+            loadSong(currentSongIndex);
+            if (isPlayerPlaying) playSong();
+        }
+        
+        // Следующая песня
+        function nextSong() {
+            currentSongIndex++;
+            if (currentSongIndex > songs.length - 1) {
+                currentSongIndex = 0;
+            }
+            loadSong(currentSongIndex);
+            if (isPlayerPlaying) playSong();
+        }
+        
+        // Обработчики событий
+        playBtn.addEventListener('click', function() {
+            isPlayerPlaying ? pauseSong() : playSong();
+        });
+        
+        prevBtn.addEventListener('click', prevSong);
+        nextBtn.addEventListener('click', nextSong);
+        
+        // Прогресс бар
+        audioPlayer.addEventListener('timeupdate', updateProgress);
+        audioPlayer.addEventListener('ended', nextSong);
+        
+        // Клик по прогресс бару
+        const progressContainer = document.querySelector('.progress-container');
+        progressContainer.addEventListener('click', function(e) {
+            const width = this.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audioPlayer.duration;
+            audioPlayer.currentTime = (clickX / width) * duration;
+        });
+        
+        // Клик по песне в плейлисте
+        playlistItems.forEach((item, index) => {
+            item.addEventListener('click', function() {
+                currentSongIndex = index;
+                loadSong(currentSongIndex);
+                playSong();
+            });
+        });
+        
+        // Автозагрузка первой песни
+        loadSong(0);
+        
+        // Обработка ошибок
+        audioPlayer.addEventListener('error', function() {
+            console.error("Ошибка загрузки аудио:", audioPlayer.error);
+            alert("Ошибка загрузки аудио. Проверьте консоль для подробностей.");
+        });
+    });
+</script>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Наше видео | Дмитрий & Эльмира</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff6b81;
+            --secondary-color: #ff8e9e;
+            --dark-color: #333;
+            --light-color: #f8f9fa;
+            --text-color: #444;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: #fef6f7;
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        
+        /* Music Toggle */
+        .music-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        #musicBtn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        #musicBtn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        /* Floating Navigation */
+        .floating-nav {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            background: white;
+            border-radius: 30px;
+            padding: 15px 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        .floating-nav ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .floating-nav a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            color: var(--dark-color);
+            text-decoration: none;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-nav a:hover, .floating-nav a.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .floating-nav a::after {
+            content: attr(title);
+            position: absolute;
+            right: 70px;
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        
+        .floating-nav a:hover::after {
+            opacity: 1;
+        }
+        
+        /* Header */
+        .page-header {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            background: linear-gradient(rgba(255, 107, 129, 0.8), rgba(255, 107, 129, 0.8)), 
+                        url('images/map-bg.jpg') center/cover;
+            position: relative;
+        }
+        
+        .page-header .container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Video Section */
+        .video-section {
+            padding: 60px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .video-container {
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 5px solid white;
+        }
+        
+        .video-container video {
+            width: 100%;
+            display: block;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        footer p {
+            margin-bottom: 10px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .floating-nav {
+                bottom: 20px;
+                top: auto;
+                right: 50%;
+                transform: translateX(50%);
+                flex-direction: row;
+                padding: 10px 15px;
+                border-radius: 30px;
+            }
+            
+            .floating-nav ul {
+                flex-direction: row;
+            }
+            
+            .floating-nav a {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .floating-nav a::after {
+                display: none;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .video-container {
+                border-radius: 10px;
+                border-width: 3px;
+            }
+            
+            .music-toggle {
+                bottom: 80px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Фоновый аудио плеер -->
+    <audio id="bgMusic" loop>
+        <source src="music/your-song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Кнопка включения музыки -->
+    <div class="music-toggle">
+        <button id="musicBtn"><i class="fas fa-music"></i> Включить музыку</button>
+    </div>
+
+    <!-- Навигация -->
+    <nav class="floating-nav">
+        <ul>
+            <li><a href="index.html" title="Начало"><i class="fas fa-home"></i></a></li>
+            <li><a href="timeline.html" title="Хронология"><i class="fas fa-history"></i></a></li>
+            <li><a href="map.html" title="Наши места"><i class="fas fa-map-marked-alt"></i></a></li>
+            <li><a href="gallery.html" class="active" title="Видео"><i class="fas fa-video"></i></a></li>
+            <li><a href="letters.html" title="Письма"><i class="fas fa-envelope"></i></a></li>
+            <li><a href="music.html" title="Наша музыка"><i class="fas fa-headphones"></i></a></li>
+        </ul>
+    </nav>
+
+    <!-- Заголовок страницы -->
+    <header class="page-header">
+        <div class="container">
+            <h1>Наше видео</h1>
+        </div>
+    </header>
+
+    <!-- Видео -->
+    <section class="video-section">
+        <div class="container">
+            <div class="video-container">
+                <video controls poster="images/video-poster.jpg">
+                    <source src="videos/our-video.mp4" type="video/mp4">
+                    Ваш браузер не поддерживает видео тег.
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Создано с ❤ для самой прекрасной девушки на свете</p>
+            <p>© 2024 Дмитрий & Эльмира</p>
+        </div>
+    </footer>
+
+    <script>
+        // Музыка
+        document.addEventListener('DOMContentLoaded', function() {
+            const musicBtn = document.getElementById('musicBtn');
+            const bgMusic = document.getElementById('bgMusic');
+            let isPlaying = false;
+            
+            musicBtn.addEventListener('click', function() {
+                if (isPlaying) {
+                    bgMusic.pause();
+                    musicBtn.innerHTML = '<i class="fas fa-music"></i> Включить музыку';
+                } else {
+                    bgMusic.play();
+                    musicBtn.innerHTML = '<i class="fas fa-pause"></i> Выключить музыку';
+                }
+                isPlaying = !isPlaying;
+            });
+        });
+    </script>
+</body>
+</html>

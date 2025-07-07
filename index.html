@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Наша история | Дмитрий & Эльмира</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ff6b81;
+            --secondary-color: #ff8e9e;
+            --dark-color: #333;
+            --light-color: #f8f9fa;
+            --text-color: #444;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: #fef6f7;
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Music Toggle */
+        .music-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        #musicBtn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        #musicBtn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        /* Navigation */
+        .floating-nav {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            z-index: 1000;
+            background: white;
+            border-radius: 30px;
+            padding: 15px 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        .floating-nav ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .floating-nav a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            color: var(--dark-color);
+            text-decoration: none;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-nav a:hover, .floating-nav a.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .floating-nav a::after {
+            content: attr(title);
+            position: absolute;
+            right: 70px;
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        
+        .floating-nav a:hover::after {
+            opacity: 1;
+        }
+        
+        /* Parallax Sections */
+        .parallax {
+            height: 100vh;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+        
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--overlay);
+        }
+        
+        .parallax .container {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .parallax h1 {
+            font-size: 4.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            font-weight: 300;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .heart {
+            font-size: 3rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Story Section */
+        .story-section {
+            padding: 80px 0;
+        }
+        
+        .story-section h2 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+        
+        .story-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        .story-text {
+            flex: 1;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+        
+        .story-text p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .story-image {
+            flex: 1;
+            position: relative;
+        }
+        
+        .story-image img {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .story-image:hover img {
+            transform: scale(1.03);
+        }
+        
+        .image-caption {
+            position: absolute;
+            bottom: -20px;
+            left: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Blockquote */
+        blockquote {
+            font-size: 2rem;
+            font-style: italic;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            padding: 0 40px;
+        }
+        
+        blockquote::before, blockquote::after {
+            content: '"';
+            font-size: 4rem;
+            color: var(--primary-color);
+            opacity: 0.3;
+            position: absolute;
+        }
+        
+        blockquote::before {
+            top: -20px;
+            left: -10px;
+        }
+        
+        blockquote::after {
+            bottom: -50px;
+            right: -10px;
+        }
+        
+        /* Milestones */
+        .milestones {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #fff5f6 0%, #fff 100%);
+        }
+        
+        .milestones h2 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+        
+        .milestones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .milestone {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .milestone:hover {
+            transform: translateY(-10px);
+        }
+        
+        .milestone::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary-color);
+        }
+        
+        .date {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .milestone h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .milestone p {
+            margin-bottom: 0;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        footer p {
+            margin-bottom: 10px;
+        }
+        
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+        
+        .delay-1 {
+            animation-delay: 0.5s;
+        }
+        
+        .delay-2 {
+            animation-delay: 1s;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: slideInLeft 1s forwards;
+        }
+        
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+            animation: slideInRight 1s forwards;
+        }
+        
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .zoom-in {
+            opacity: 0;
+            transform: scale(0.8);
+            animation: zoomIn 1s forwards;
+        }
+        
+        @keyframes zoomIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .floating-nav {
+                bottom: 20px;
+                top: auto;
+                right: 50%;
+                transform: translateX(50%);
+                flex-direction: row;
+                padding: 10px 15px;
+                border-radius: 30px;
+            }
+            
+            .floating-nav ul {
+                flex-direction: row;
+            }
+            
+            .floating-nav a {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .floating-nav a::after {
+                display: none;
+            }
+            
+            .parallax h1 {
+                font-size: 3rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .story-content {
+                flex-direction: column;
+            }
+            
+            .story-text, .story-image {
+                width: 100%;
+            }
+            
+            .image-caption {
+                position: static;
+                margin-top: 15px;
+                display: inline-block;
+            }
+            
+            blockquote {
+                font-size: 1.5rem;
+                padding: 0 20px;
+            }
+            
+            .milestones-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .music-toggle {
+                bottom: 80px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Фоновый аудио плеер (скрытый) -->
+    <audio id="bgMusic" loop>
+        <source src="music/your-song.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Кнопка включения музыки -->
+    <div class="music-toggle">
+        <button id="musicBtn"><i class="fas fa-music"></i> Включить музыку</button>
+    </div>
+
+    <!-- Параллакс секции -->
+    <header class="parallax" data-speed="0.4" style="background-image: url('images/hero-bg.jpg');">
+        <div class="overlay"></div>
+        <div class="container">
+            <h1 class="fade-in">Дмитрий & Эльмира</h1>
+            <p class="subtitle fade-in delay-1">Наша история любви</p>
+            <div class="heart pulse delay-2">❤</div>
+        </div>
+    </header>
+
+    <!-- Навигация -->
+    <nav class="floating-nav">
+        <ul>
+            <li><a href="index.html" class="active" title="Начало"><i class="fas fa-home"></i></a></li>
+            <li><a href="timeline.html" title="Хронология"><i class="fas fa-history"></i></a></li>
+            <li><a href="map.html" title="Наши места"><i class="fas fa-map-marked-alt"></i></a></li>
+            <li><a href="gallery.html" title="Галерея"><i class="fas fa-images"></i></a></li>
+            <li><a href="letters.html" title="Письма"><i class="fas fa-envelope"></i></a></li>
+            <li><a href="music.html" title="Наша музыка"><i class="fas fa-headphones"></i></a></li>
+        </ul>
+    </nav>
+
+    <!-- История знакомства -->
+    <section class="story-section">
+        <div class="container">
+            <h2>Как мы встретились</h2>
+            <div class="story-content">
+                <div class="story-text slide-in-left">
+                    <p>Пиздаболка? ДА именно это запомнилось в нашу первую встречу. Захотел подойти попросить жижу</p>
+                    <p>Тебе не жарко?</p>
+                    <p>Эти первые слова стали началом нашей невероятной истории. Мы даже не подозревали тогда, что случайная встреча перерастет в нечто большее.</p>
+                </div>
+                <div class="story-image slide-in-right">
+                    <img src="images/first-meet.jpg" alt="Наша первая встреча">
+                    <div class="image-caption">Наша первая фотография вместе</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Параллакс с цитатой -->
+    <section class="parallax" data-speed="0.2" style="background-image: url('images/memory-1.jpg');">
+        <div class="overlay"></div>
+        <div class="container">
+            <blockquote class="fade-in">
+                "Ты - лучшее, что когда-либо случалось со мной"
+            </blockquote>
+        </div>
+    </section>
+
+    <!-- Важные моменты -->
+    <section class="milestones">
+        <div class="container">
+            <h2>Важные моменты</h2>
+            <div class="milestones-grid">
+                <div class="milestone zoom-in">
+                    <div class="date">16.10.2023</div>
+                    <h3>Первое свидание</h3>
+                    <p>Тогда ты сдала все лабы, и я спросил свободна ли ты. Это была милая прогулка по скверу Лермонтова, ох я до сих пор помню ту лавочку! Даже не подозревая, что она останется в воспоминаниях.</p>
+                </div>
+                <div class="milestone zoom-in delay-1">
+                    <div class="date">9.12.2023</div>
+                    <h3>Первый поцелуй</h3>
+                    <p>Тогда это был безумный день, не знаю как так вышло! Ты поехала с подружками в клуб, а я с кожевом вышел пройтись на 40 минут, но я очень хотел тебя увидеть и мы в -20°C, в 00:59, мы поехали к вам в клуб!</p>
+                </div>
+                <div class="milestone zoom-in delay-2">
+                    <div class="date">9.12.2023</div>
+                    <h3>Первая ночь</h3>
+                    <p>Как бы это странно не было, но да это тот же день что и поцелуй! Ты забыла карту и я долго уговаривал тебя поехать ко мне! Эти полтора часа сна были самыми счастливыми в моей жизни.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Подвал -->
+    <footer>
+        <div class="container">
+            <p>Создано с ❤ для самой прекрасной девушки на свете</p>
+            <p>© 2024 Дмитрий & Эльмира</p>
+        </div>
+    </footer>
+
+    <script>
+        // Музыка
+        const musicBtn = document.getElementById('musicBtn');
+        const bgMusic = document.getElementById('bgMusic');
+        let isPlaying = false;
+        
+        musicBtn.addEventListener('click', function() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicBtn.innerHTML = '<i class="fas fa-music"></i> Включить музыку';
+            } else {
+                bgMusic.play();
+                musicBtn.innerHTML = '<i class="fas fa-pause"></i> Выключить музыку';
+            }
+            isPlaying = !isPlaying;
+        });
+        
+        // Параллакс эффект
+        document.addEventListener('DOMContentLoaded', function() {
+            const parallaxElements = document.querySelectorAll('.parallax');
+            
+            window.addEventListener('scroll', function() {
+                parallaxElements.forEach(function(element) {
+                    const speed = parseFloat(element.getAttribute('data-speed'));
+                    const yPos = -window.pageYOffset * speed;
+                    element.style.backgroundPosition = 'center ' + yPos + 'px';
+                });
+            });
+        });
+        
+        // Анимации при скролле
+        const animateOnScroll = function() {
+            const elements = document.querySelectorAll('.slide-in-left, .slide-in-right, .zoom-in');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight - 100) {
+                    element.style.animationPlayState = 'running';
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+    </script>
+</body>
+</html>
