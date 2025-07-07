@@ -1,0 +1,227 @@
+/* Стили для писем */
+.letters-section {
+    padding: 80px 0;
+    background-color: #fff5f6;
+}
+
+.letters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.letter {
+    position: relative;
+    perspective: 1000px;
+    height: 200px;
+}
+
+.letter-envelope {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.7s;
+}
+
+.letter.open .letter-envelope {
+    transform: rotateX(180deg);
+}
+
+.letter-front,
+.letter-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 5px;
+}
+
+.letter-front {
+    background: #fff;
+    border: 2px solid var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.letter-back {
+    background: repeating-linear-gradient(
+        45deg,
+        #f8f8f8,
+        #f8f8f8 10px,
+        #fff 10px,
+        #fff 20px
+    );
+    transform: rotateX(180deg);
+    border: 1px dashed #ccc;
+}
+
+.heart-stamp {
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.recipient {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.3rem;
+    color: var(--dark-color);
+    text-align: center;
+}
+
+.letter-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    background: white;
+    padding: 25px;
+    border-radius: 5px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 10;
+}
+
+.letter.open .letter-content {
+    display: block;
+}
+
+.letter-date {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.letter-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #555;
+}
+
+.letter-text p {
+    margin-bottom: 10px;
+}
+
+.close-letter {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.3s;
+}
+
+.close-letter:hover {
+    color: var(--primary-color);
+}
+
+.empty-envelope {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    border: 2px dashed var(--primary-color);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.empty-envelope:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.plus-icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.empty-envelope p {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+/* Модальное окно */
+.new-letter-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+}
+
+.modal-content h2 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.form-group textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.btn-cancel {
+    background: #ccc;
+    margin-left: 10px;
+}
+
+.btn-cancel:hover {
+    background: #999;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .letters-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        padding: 20px;
+    }
+}
